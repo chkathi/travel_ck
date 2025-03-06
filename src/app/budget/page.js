@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Form from "next/form";
-import Navbar from "../components/navbar";
-
 import { createClient } from "@supabase/supabase-js";
+
+import Navbar from "../components/navbar";
+import BudgetForm from "./components/form";
 
 export default function Budget() {
   const supabaseURL = process.env.NEXT_PUBLIC_SUPA_URL;
@@ -23,16 +23,14 @@ export default function Budget() {
     setIsAuthorized(localStorage.getItem("isAuthorized") === "true");
 
     const fetchData = async () => {
-      let { data, error } = await supabase
-        .from("Spending")
-        .select("*");
+      let { data, error } = await supabase.from("Spending").select("*");
 
       console.log("fetchData error:", error);
       console.log("fetchData data:", Spending);
     };
 
-    setData(data)
-    setError(error)
+    setData(data);
+    setError(error);
 
     fetchData();
   }, []);
@@ -42,22 +40,7 @@ export default function Budget() {
     <div>
       <Navbar isAuthorized={isAuthorized} />
       <h1>Budget Form</h1>
-      <Form>
-        <input
-          placeholder="expense_name"
-          className="border-4 border-white-50"
-        />
-        <input
-          placeholder="expense_type"
-          className="border-4 border-white-50"
-        />
-        <input placeholder="cost" className="border-4 border-white-50" />
-        <input
-          placeholder="notes_optional"
-          className="border-4 border-white-50"
-        />
-        <button> Add Expense </button>
-      </Form>
+      <BudgetForm />
     </div>
   );
 }
