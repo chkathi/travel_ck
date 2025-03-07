@@ -1,20 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { createClient } from "@supabase/supabase-js";
 
+import { supabase } from "@/app/lib/supabaseClient";
 import Navbar from "../components/navbar";
 import BudgetForm from "./components/form";
+import BudgetTable from "./components/table";
 
 export default function Budget() {
-  const supabaseURL = process.env.NEXT_PUBLIC_SUPA_URL;
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPA_ANON;
   const [isAuthorized, setIsAuthorized] = useState(false);
-
-  console.log("key:", supabaseURL);
-  console.log("anon:", supabaseKey);
-
-  const supabase = createClient(supabaseURL, supabaseKey);
 
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
@@ -26,7 +20,7 @@ export default function Budget() {
       let { data, error } = await supabase.from("Spending").select("*");
 
       console.log("fetchData error:", error);
-      console.log("fetchData data:", Spending);
+      console.log("fetchData data:", data);
     };
 
     setData(data);
@@ -41,6 +35,9 @@ export default function Budget() {
       <Navbar isAuthorized={isAuthorized} />
       <h1>Budget Form</h1>
       <BudgetForm />
+      <br />
+
+      <BudgetTable />
     </div>
   );
 }
