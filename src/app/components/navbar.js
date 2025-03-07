@@ -17,11 +17,18 @@ export default function Navbar(props) {
             </Link>
           </li>
         ) : (
-          <li className="flex flex-row justify-center">
-            <Link href="/budget" className="px-2">
-              Budget
-            </Link>
-          </li>
+          <>
+            <li className="flex flex-row justify-center">
+              <Link href="/budget" className="px-2">
+                Budget
+              </Link>
+            </li>
+            <li className="flex flex-row justify-center">
+              <Link href="/transport" className="px-2">
+                Flight and Hotels
+              </Link>
+            </li>
+          </>
         )}
       </ul>
       <div className="flex justify-center my-6">
