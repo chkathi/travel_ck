@@ -19,8 +19,13 @@ export default function Budget() {
     fetchData();
   }, []);
 
-  const fetchData = async () => {
-    let { data, error } = await supabase.from("Spending").select("*");
+  const fetchData = async (tripId) => {
+    if (tripId === -1) return;
+
+    let { data, error } = await supabase
+      .from("Spending")
+      .select("*")
+      .eq("trip_id", tripId);
 
     console.log("fetchData error:", error);
     console.log("fetchData data:", data);

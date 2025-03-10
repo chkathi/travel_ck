@@ -30,7 +30,7 @@ export default function BudgetTable({ data }) {
       </Grid>
 
       {/* Table Body */}
-      {data.length > 0 ? (
+      {data?.length > 0 ? (
         data.map((item) => (
           <Grid container spacing={4} key={item.id} sx={{ pt: 1 }}>
             <Grid item xs={3}>

@@ -2,6 +2,8 @@ import Form from "next/form";
 import { useState } from "react";
 import { TextField, Button, Container, Typography } from "@mui/material";
 
+import { supabase } from "../lib/supabaseClient";
+
 export default function TripForm() {
   const [trip, setTrip] = useState({
     destination: "",
@@ -13,9 +15,28 @@ export default function TripForm() {
     setTrip({ ...trip, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Trip Data:", trip);
+    const confirmSubmission = window.confirm(
+      `Confirm trip details?\nDestination: ${trip.destination}\nStart Date: ${trip.startDate}\nEnd Date: ${trip.endDate}`
+    );
+    if (confirmSubmission) {
+      console.log("Trip Data:", trip);
+
+      const { data, error } = await supabase
+        .from("Trip")
+        .insert({
+          destination: trip.destination,
+          arrival_date: trip.startDate,
+          end_date: trip.endDate,
+        })
+        .select();
+
+      console.log("Insert trip (error) :", error);
+      console.log("Insert trip (data): ", data);
+
+      setTrip({ destination: "", startDate: "", endDate: "" }); // Reset form
+    }
   };
 
   return (
@@ -44,7 +65,7 @@ export default function TripForm() {
         <TextField
           fullWidth
           label="Start Date & Time"
-          type="datetime-local"
+          type="date"
           name="startDate"
           value={trip.startDate}
           onChange={handleChange}
@@ -55,7 +76,7 @@ export default function TripForm() {
         <TextField
           fullWidth
           label="End Date & Time"
-          type="datetime-local"
+          type="date"
           name="endDate"
           value={trip.endDate}
           onChange={handleChange}
