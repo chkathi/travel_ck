@@ -20,7 +20,7 @@ export default function Budget() {
   }, []);
 
   const fetchData = async (tripId) => {
-    if (tripId === -1) return;
+    if (!tripId) return;
 
     let { data, error } = await supabase
       .from("Spending")

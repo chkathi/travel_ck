@@ -17,12 +17,13 @@ import { supabase } from "@/app/lib/supabaseClient";
 export default function BudgetForm({ fetchData }) {
   const [expenseName, setExpenseName] = useState("");
   const [expenseType, setExpenseType] = useState("");
-  const [cost, setCost] = useState(0.0);
+  const [cost, setCost] = useState("");
   const [notes, setNotes] = useState("");
-  const [tripId, setTripId] = useState(-1);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [trips, setTrips] = useState([]);
+  const [tripId, setTripId] = useState(() =>
+    trips.length > 0 ? trips[0].id : null
+  );
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchTrips = async () => {
@@ -36,7 +37,7 @@ export default function BudgetForm({ fetchData }) {
       console.log("Trip data:", data);
       setTrips(data);
 
-      if (tripId === -1 && data.length > 0) {
+      if (!tripId && data.length > 0) {
         setTripId(data[0].id);
       }
     };
@@ -47,6 +48,12 @@ export default function BudgetForm({ fetchData }) {
   useEffect(() => {
     fetchData(tripId);
   }, [tripId]);
+
+  useEffect(() => {
+    if (trips.length > 0 && tripId === null) {
+      setTripId(trips[0].id);
+    }
+  }, [trips]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -149,7 +156,7 @@ export default function BudgetForm({ fetchData }) {
 
           <Select
             labelId="trip-select-label"
-            value={tripId}
+            value={tripId || ""}
             label="Select Trip"
             onChange={(e) => {
               console.log("selected trip: ", e.target.value);
