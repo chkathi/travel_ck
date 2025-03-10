@@ -12,7 +12,7 @@ import {
 
 import { supabase } from "@/app/lib/supabaseClient";
 
-export default function BudgetForm() {
+export default function BudgetForm({ fetchData }) {
   const [expenseName, setExpenseName] = useState("");
   const [expenseType, setExpenseType] = useState("");
   const [cost, setCost] = useState(0.0);
@@ -46,6 +46,7 @@ export default function BudgetForm() {
     setExpenseName("");
     setExpenseType("");
     setNotes("");
+    fetchData();
   }
 
   const handleCostChange = (e) => {
@@ -133,3 +134,8 @@ export default function BudgetForm() {
     </div>
   );
 }
+
+
+// To Do's 
+// - create drop down for each trip in the database
+// - by selecting the trip you enable fetchSpendingData for that specific trip

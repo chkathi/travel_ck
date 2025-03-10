@@ -1,30 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Grid, Box, Typography } from "@mui/material";
 
-import { supabase } from "@/app/lib/supabaseClient";
-
-export default function BudgetTable() {
-  const [data, setData] = useState([]);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const { data, error } = await supabase.from("Spending").select("*");
-
-      if (error) {
-        console.error("Fetch error:", error);
-        setError(error);
-      } else {
-        console.log("Fetched data:", data);
-        setData(data);
-      }
-    };
-
-    fetchData();
-  }, []);
-
+export default function BudgetTable({ data }) {
   return (
     <Box
       sx={{

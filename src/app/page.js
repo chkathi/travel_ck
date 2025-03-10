@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Navbar from "./components/navbar";
+import TripForm from "./components/tripform";
 
 export default function Home() {
   const [isAuthorized, setIsAuthorized] = useState(false);
@@ -36,16 +37,8 @@ export default function Home() {
         ) : (
           <></>
         )}
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+
+        <TripForm />
 
         <div className="flex gap-4 items-center flex-col sm:flex-row">
           <a
