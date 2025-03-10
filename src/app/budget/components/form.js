@@ -46,7 +46,9 @@ export default function BudgetForm({ fetchData }) {
   }, []);
 
   useEffect(() => {
-    fetchData(tripId);
+    if (tripId != null) {
+      fetchData(tripId);
+    }
   }, [tripId]);
 
   useEffect(() => {
