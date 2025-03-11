@@ -16,28 +16,32 @@ export default function Budget() {
   useEffect(() => {
     setIsAuthorized(localStorage.getItem("isAuthorized") === "true");
 
-    const fetchData = async () => {
-      let { data, error } = await supabase.from("Spending").select("*");
-
-      console.log("fetchData error:", error);
-      console.log("fetchData data:", data);
-    };
-
-    setData(data);
-    setError(error);
-
     fetchData();
   }, []);
+
+  const fetchData = async (tripId) => {
+    if (!tripId) return;
+
+    let { data, error } = await supabase
+      .from("Spending")
+      .select("*")
+      .eq("trip_id", tripId);
+
+    console.log("fetchData error:", error);
+    console.log("fetchData data:", data);
+
+    setData(data);
+  };
 
   return (
     /* add action prop to initiate a route */
     <div>
       <Navbar isAuthorized={isAuthorized} />
       <h1>Budget Form</h1>
-      <BudgetForm />
-      <br />
 
-      <BudgetTable />
+      <BudgetForm fetchData={fetchData} />
+      <br />
+      <BudgetTable data={data} />
     </div>
   );
 }

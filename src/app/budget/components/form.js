@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Form from "next/form";
 
 import {
@@ -8,21 +8,59 @@ import {
   DialogTitle,
   Button,
   TextField,
+  Select,
+  MenuItem,
 } from "@mui/material";
 
 import { supabase } from "@/app/lib/supabaseClient";
 
-export default function BudgetForm() {
+export default function BudgetForm({ fetchData }) {
   const [expenseName, setExpenseName] = useState("");
   const [expenseType, setExpenseType] = useState("");
-  const [cost, setCost] = useState(0.0);
+  const [cost, setCost] = useState("");
   const [notes, setNotes] = useState("");
+  const [trips, setTrips] = useState([]);
+  const [tripId, setTripId] = useState(() =>
+    trips.length > 0 ? trips[0].id : null
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchTrips = async () => {
+      let { data, error } = await supabase.from("Trip").select("*");
+
+      if (error) {
+        console.error("Error fetching trips:", error);
+        return;
+      }
+
+      console.log("Trip data:", data);
+      setTrips(data);
+
+      if (!tripId && data.length > 0) {
+        setTripId(data[0].id);
+      }
+    };
+
+    fetchTrips();
+  }, []);
+
+  useEffect(() => {
+    if (tripId != null) {
+      fetchData(tripId);
+    }
+  }, [tripId]);
+
+  useEffect(() => {
+    if (trips.length > 0 && tripId === null) {
+      setTripId(trips[0].id);
+    }
+  }, [trips]);
 
   async function handleSubmit(e) {
     e.preventDefault();
 
-    console.log(expenseName, expenseType, cost, notes);
+    console.log(expenseName, expenseType, cost, notes, tripId);
 
     if (!expenseName || !expenseType || !cost) {
       setIsModalOpen(true);
@@ -33,7 +71,8 @@ export default function BudgetForm() {
         expense_name: expenseName,
         expense_type: expenseType,
         cost: cost,
-        description: notes,
+        notes: notes,
+        trip_id: tripId,
       })
       .select();
 
@@ -42,6 +81,9 @@ export default function BudgetForm() {
     } else {
       console.log(data);
     }
+
+    fetchData(tripId);
+
     setCost(0);
     setExpenseName("");
     setExpenseType("");
@@ -113,6 +155,26 @@ export default function BudgetForm() {
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
           />
+
+          <Select
+            labelId="trip-select-label"
+            value={tripId || ""}
+            label="Select Trip"
+            onChange={(e) => {
+              console.log("selected trip: ", e.target.value);
+              setTripId(e.target.value);
+            }}
+          >
+            {trips.map((trip) => (
+              <MenuItem
+                key={trip.id}
+                className="text-black bg-white"
+                value={trip.id}
+              >
+                {`${trip.destination} ${trip.arrival_date}`}
+              </MenuItem>
+            ))}
+          </Select>
         </div>
 
         <button type="submit"> Add Expense </button>
@@ -133,3 +195,7 @@ export default function BudgetForm() {
     </div>
   );
 }
+
+// To Do's
+// - create drop down for each trip in the database
+// - by selecting the trip you enable fetchSpendingData for that specific trip
